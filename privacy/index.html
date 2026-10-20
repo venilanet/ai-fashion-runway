@@ -4,45 +4,62 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Privacy Policy — AI Fashion Runway</title>
-<meta name="description" content="How AI Fashion Runway handles your photos: what is processed, where, and how to request deletion.">
+<meta name="description" content="How AI Fashion Runway handles your photos and data: what is processed, where, how long it is kept, and how to request deletion.">
 <link rel="canonical" href="https://ai-fashion-runway.pages.dev/privacy/">
 <meta name="robots" content="index, follow">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<div class="demo-banner" role="note"><strong>DEMO PREVIEW</strong> — Live AI generation is not connected yet.</div>
 <header class="site-header">
-  <div class="logo">✦ AI FASHION <span>RUNWAY</span></div>
-  <span class="demo-pill">Demo</span>
+  <a class="logo" href="/">✦ AI FASHION <span>RUNWAY</span></a>
+  <nav class="main-nav">
+    <a href="/#how">How it works</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/#faq">FAQ</a>
+    <a href="/support/">Support</a>
+  </nav>
+  <a class="nav-cta" href="/#app">Create video</a>
 </header>
 <main class="legal">
-  <p><a href="/" style="color:#d4af37">← Home</a></p>
+  <p><a class="backlink" href="/">← Home</a></p>
   <h1>Privacy Policy</h1>
   <p class="updated">Last updated: October 20, 2026</p>
 
-  <h2>1. Current state: demo preview</h2>
-  <p>During this demo phase, everything runs in your browser. Your photo never leaves your device, is never uploaded anywhere, and no video is generated. There is nothing to delete because nothing is stored.</p>
-
-  <h2>2. What happens when live generation launches</h2>
+  <h2>1. What we process and why</h2>
   <ul>
-    <li><strong>Your photo</strong> is sent to our video-generation provider (fal.ai, which runs the video model) solely to create your runway video. It is not used for advertising, profiling, or model training by us.</li>
-    <li><strong>Your video</strong> is generated on fal.ai's infrastructure and returned to you for download. We do not publish it anywhere.</li>
-    <li><strong>Retention:</strong> uploaded photos and generated videos are deleted from our systems within 30 days, and from the provider's systems per their data-processing terms. You can request earlier deletion at any time (see §4).</li>
+    <li><strong>Your photo</strong> — sent to our video-generation provider (fal.ai, which runs the video model) for the sole purpose of creating your runway video. It is not used for advertising, profiling, or model training by us.</li>
+    <li><strong>Your video</strong> — generated on the provider's infrastructure and returned to you for download. We do not publish it anywhere.</li>
+    <li><strong>Waitlist &amp; support messages</strong> — if you join the waitlist or contact support, we store your email and message so we can reply and notify you. Stored in our Cloudflare KV database.</li>
+    <li><strong>Payments</strong> — processed by our payment provider at public launch. We never see or store your full card number.</li>
   </ul>
 
-  <h2>3. What we do not collect</h2>
-  <p>No accounts, no analytics cookies, no device fingerprinting in this build. If analytics are added later, this policy will be updated before they go live.</p>
+  <h2>2. Retention &amp; deletion</h2>
+  <ul>
+    <li>Uploaded photos and generated videos are deleted from our systems within 30 days, and from the provider's systems under their data-processing terms.</li>
+    <li>Waitlist emails are kept until you unsubscribe or ask us to delete them.</li>
+    <li>Support tickets are kept for 180 days, then deleted automatically.</li>
+  </ul>
+  <p>You can request a copy or deletion of anything we hold about you at any time via the <a href="/support/">Support Center</a> (choose "Privacy request").</p>
 
-  <h2>4. Your rights</h2>
-  <p>You can request a copy or deletion of anything we hold about you. The fastest way is via our <a href="/contact/" style="color:#d4af37">contact page</a>.</p>
+  <h2>3. What we don't do</h2>
+  <p>No sale of personal data. No advertising trackers. If analytics are added later, this policy will be updated before they go live.</p>
+
+  <h2>4. Security</h2>
+  <p>API keys and credentials live only in our server environment — never in frontend code. Support and waitlist data is stored in Cloudflare's infrastructure with access limited to operating the service.</p>
 
   <h2>5. Children</h2>
-  <p>This tool is not intended for anyone under 18.</p>
+  <p>This service is not intended for anyone under 18, and we do not knowingly collect data from children.</p>
+
+  <h2>6. Changes</h2>
+  <p>Material changes will be noted here with a new date. Continued use after changes means you accept them.</p>
 </main>
 <footer class="site-footer">
-  <p>AI Fashion Runway — an independent AI video tool. Not affiliated with or endorsed by any fashion brand.</p>
-  <nav class="legal-links"><a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms of Use</a> · <a href="/contact/">Contact</a></nav>
+  <p>AI Fashion Runway — an independent AI video tool. All scenes, outfits and wing designs are original creations; not affiliated with or endorsed by any fashion brand or fashion show.</p>
+  <nav class="legal-links">
+    <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms of Service</a> · <a href="/refund/">Refund Policy</a> · <a href="/contact/">Contact</a> · <a href="/support/">Support</a>
+  </nav>
+  <p class="copyright">© 2026 AI Fashion Runway. All rights reserved.</p>
 </footer>
 </body>
 </html>
