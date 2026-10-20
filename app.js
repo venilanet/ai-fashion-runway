@@ -15,6 +15,9 @@
   // ---- site config (support email, generation/payment status) ----
   fetch("/api/config").then((r) => r.json()).then((cfg) => {
     generationLive = !!cfg.generationLive;
+    if (cfg.paymentsLive) {
+      document.querySelectorAll(".price-cta").forEach((b) => { b.textContent = "Buy now — $9.99"; });
+    }
     document.querySelectorAll("[data-support-email]").forEach((el) => {
       if (cfg.supportEmail) {
         el.textContent = cfg.supportEmail; el.href = "mailto:" + cfg.supportEmail;
@@ -73,87 +76,34 @@
     else goto("screen-template");
   });
   document.querySelectorAll(".price-cta").forEach((btn) =>
-    btn.addEventListener("click", () => goto("screen-waitlist"))
+    btn.addEventListener("click", async () => {
+      // When payments go live this creates a real Stripe Checkout session
+      // carrying the chosen template; until then it opens the waitlist.
+      try {
+        const r = await fetch("/api/config").then((x) => x.json());
+        if (r.paymentsLive) {
+          btn.disabled = true;
+          const c = await fetch("/api/checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ template: selectedTemplate }),
+          }).then((x) => x.json());
+          if (c.ok && c.url) { location.href = c.url; return; }
+          btn.disabled = false;
+        }
+      } catch (e) { /* fall through to waitlist */ }
+      goto("screen-waitlist");
+    })
   );
 
   // ---- generate ----
+  // Closed testing: no public generation. The paid flow (checkout → /success/)
+  // is the only path that creates generation tasks, and only when enabled.
   const genBtn = $("#generateBtn");
-  if (genBtn) genBtn.addEventListener("click", async () => {
+  if (genBtn) genBtn.addEventListener("click", () => {
     if (!photoURL) { input.click(); return; }
-    if (!generationLive) { goto("screen-waitlist"); return; }
-    // Live mode: submit to server, poll status.
-    const tplName = $("#resultTplName");
-    goto("screen-waiting");
-    runProgress();
-    try {
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ template: selectedTemplate }),
-      });
-      const data = await res.json();
-      if (data.request_id) pollStatus(data.request_id);
-      else showFailure("The generation service returned an unexpected response. Your credit was not used.");
-    } catch (e) {
-      showFailure("Could not reach the generation service. Your credit was not used — please try again.");
-    }
+    goto("screen-waitlist");
   });
-
-  async function pollStatus(id) {
-    for (let i = 0; i < 40; i++) {
-      await new Promise((r) => setTimeout(r, 15000));
-      try {
-        const res = await fetch("/api/status?id=" + encodeURIComponent(id));
-        const data = await res.json();
-        if (data.status === "completed" && data.video_url) { showVideo(data.video_url); return; }
-        if (data.status === "failed") { showFailure("The video model could not complete this request. Your credit has been returned."); return; }
-      } catch (e) { /* keep polling */ }
-    }
-    showFailure("Generation is taking longer than expected. Your credit has been returned — please try again or contact support.");
-  }
-
-  function showVideo(url) {
-    const v = $("#resultVideo");
-    v.src = url; v.hidden = false;
-    const img = $("#resultPhoto"); if (img) img.hidden = true;
-    const ov = $("#resultOverlay"); if (ov) ov.hidden = true;
-    const dl = $("#downloadBtn");
-    dl.textContent = "Download video";
-    dl.onclick = () => { const a = document.createElement("a"); a.href = url; a.download = "ai-fashion-runway.mp4"; a.click(); };
-    goto("screen-result");
-  }
-
-  function showFailure(msg) {
-    const v = $("#resultVideo"); if (v) v.hidden = true;
-    const img = $("#resultPhoto"); if (img) { img.hidden = false; }
-    const ov = $("#resultOverlay"); if (ov) ov.hidden = false;
-    const err = $("#resultError"); if (err) err.innerHTML = msg + ' <a href="/support/">Contact support</a>.';
-    const dl = $("#downloadBtn");
-    dl.textContent = "No video to download";
-    dl.onclick = () => goto("screen-template");
-    goto("screen-result");
-  }
-
-  function runProgress() {
-    const bar = $("#ringBar"), pct = $("#ringPct");
-    if (!bar) return;
-    const steps = Array.from(document.querySelectorAll("#genSteps li"));
-    steps.forEach((li) => li.classList.remove("doing", "done"));
-    const t0 = performance.now();
-    (function frame(now) {
-      const p = Math.min(1, (now - t0) / 240000); // ~4 min cap for the animation
-      const deg = Math.round(p * 360);
-      bar.style.background = `conic-gradient(var(--gold) ${deg}deg, #23232e ${deg}deg)`;
-      pct.textContent = Math.round(p * 100) + "%";
-      const stage = Math.min(3, Math.floor(p * 4));
-      steps.forEach((li, i) => {
-        li.classList.toggle("done", i < stage);
-        li.classList.toggle("doing", i === stage);
-      });
-      if (p < 1 && document.getElementById("screen-waiting").classList.contains("active"))
-        requestAnimationFrame(frame);
-    })(t0);
-  }
 
   // ---- waitlist ----
   const wForm = $("#waitlistForm");
