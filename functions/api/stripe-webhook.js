@@ -50,6 +50,9 @@ export async function onRequestPost({ request, env }) {
     if (s.payment_status === "paid" && s.mode === "payment") {
       const existing = await getOrderBySession(env, s.id);
       if (!existing) {
+        const md = s.metadata || {};
+        const template = ["golden-sheer-wings", "supermodel-walk", "dream-angel"].includes(md.template)
+          ? md.template : "golden-sheer-wings";
         const order = {
           id: newOrderId(),
           email: (s.customer_details && s.customer_details.email) || null,
@@ -60,6 +63,7 @@ export async function onRequestPost({ request, env }) {
           status: "paid",
           credits_total: 1,
           credits_used: 0,
+          template,
           photo_url: null,
           generations: [],
           created_ts: Date.now(),
