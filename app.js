@@ -15,7 +15,7 @@
   // ---- analytics (GA4) ----
   // Replace GA_ID with the real Measurement ID to activate. Events carry no
   // photos, emails, or other personal data — only anonymous interaction counts.
-  const GA_ID = "G-PLACEHOLDER";
+  const GA_ID = "G-1QX3D9DVXL";
   window.dataLayer = window.dataLayer || [];
   window.gtag = function () { window.dataLayer.push(arguments); };
   const gaOn = /^G-[A-Z0-9]{6,}$/.test(GA_ID);
