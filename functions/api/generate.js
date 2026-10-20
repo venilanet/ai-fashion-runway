@@ -4,11 +4,12 @@
 // variable FAL_KEY (set in the Cloudflare Pages dashboard / wrangler secret).
 // It is never sent to the browser and never appears in client code.
 //
-// DEMO STATE: while FAL_KEY is not configured, this endpoint performs NO
-// generation and honestly reports demo mode. The frontend labels the whole
-// flow as a demo. When the key is configured, it submits ONE job to the
-// fal queue for the Kling v3 Standard image-to-video endpoint and returns
-// the request id; the client then polls /api/status.
+// EARLY ACCESS: while FAL_KEY is not configured, this endpoint performs NO
+// generation and reports waitlist mode; the frontend routes users to the
+// early-access waitlist instead of faking a video. When the key is
+// configured, it submits ONE job to the fal queue for the Kling v3 Standard
+// image-to-video endpoint and returns the request id; the client polls
+// /api/status.
 
 const FAL_MODEL = "fal-ai/kling-video/v3/standard/image-to-video";
 const FAL_QUEUE = "https://queue.fal.run";
@@ -68,10 +69,10 @@ export async function onRequestPost(context) {
 
   if (!env.FAL_KEY) {
     return Response.json({
-      mode: "demo",
-      status: "not_connected",
+      mode: "waitlist",
+      status: "not_available",
       message:
-        "Live generation is not connected yet. This is a demo: no video was generated and no photo was uploaded.",
+        "Generation is currently in early access. Join the waitlist to be notified when your spot opens.",
       template,
     });
   }
