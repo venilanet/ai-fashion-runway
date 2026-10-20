@@ -1,10 +1,8 @@
-// GET /api/config — public site configuration.
-// Exposes only non-secret values: Crisp website id (public site identifier),
-// support email (public contact), and whether live generation is available.
+// GET /api/config — public site configuration (non-secret values only).
 export async function onRequestGet({ env }) {
   return Response.json({
-    crispWebsiteId: env.CRISP_WEBSITE_ID || null,
-    supportEmail: env.SUPPORT_EMAIL || null,
+    supportEmail: env.SUPPORT_EMAIL || "venilanet@gmail.com",
     generationLive: !!env.FAL_KEY,
+    paymentsLive: env.PAYMENTS_LIVE === "1" || env.PAYMENTS_LIVE === "true",
   });
 }
