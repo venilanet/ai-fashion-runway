@@ -10,9 +10,9 @@ export async function onRequestGet(context) {
 
   if (!env.FAL_KEY) {
     return Response.json({
-      mode: "demo",
-      status: "not_connected",
-      message: "Live generation is not connected yet (demo build).",
+      mode: "waitlist",
+      status: "not_available",
+      message: "Generation is currently in early access.",
     });
   }
   if (!id) {
