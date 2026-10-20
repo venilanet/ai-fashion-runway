@@ -5,7 +5,9 @@
 // STRIPE_SECRET_KEY and STRIPE_PRICE_ID live only in the server environment.
 import { paymentsLive, siteUrl } from "../lib/orders.js";
 
-export async function onRequestPost({ env }) {
+const TEMPLATES = ["golden-sheer-wings", "supermodel-walk", "dream-angel"];
+
+export async function onRequestPost({ request, env }) {
   if (!paymentsLive(env)) {
     return Response.json(
       { ok: false, error: "not_live", message: "Payments are not open yet." },
@@ -18,6 +20,9 @@ export async function onRequestPost({ env }) {
       { status: 503 }
     );
   }
+  let body = {};
+  try { body = await request.json(); } catch (_) { /* fall through */ }
+  const template = TEMPLATES.includes(body.template) ? body.template : "golden-sheer-wings";
   const base = siteUrl(env);
   const params = new URLSearchParams({
     mode: "payment",
@@ -26,6 +31,7 @@ export async function onRequestPost({ env }) {
     success_url: base + "/success/?session_id={CHECKOUT_SESSION_ID}",
     cancel_url: base + "/#pricing",
     "metadata[product]": "ai-fashion-runway-single-video",
+    "metadata[template]": template,
   });
   const res = await fetch("https://api.stripe.com/v1/checkout/sessions", {
     method: "POST",
