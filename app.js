@@ -12,6 +12,26 @@
     "dream-angel": "Dream Angel",
   };
 
+  // ---- analytics (GA4) ----
+  // Replace GA_ID with the real Measurement ID to activate. Events carry no
+  // photos, emails, or other personal data — only anonymous interaction counts.
+  const GA_ID = "G-PLACEHOLDER";
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { window.dataLayer.push(arguments); };
+  const gaOn = /^G-[A-Z0-9]{6,}$/.test(GA_ID);
+  if (gaOn) {
+    const gs = document.createElement("script");
+    gs.async = true;
+    gs.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(GA_ID);
+    document.head.appendChild(gs);
+    gtag("js", new Date());
+    gtag("config", GA_ID, { anonymize_ip: true }); // page_view is sent automatically
+  }
+  function trackEvent(name, params) {
+    try { if (gaOn) gtag("event", name, params || {}); }
+    catch (e) { /* analytics must never break the page */ }
+  }
+
   // ---- site config (support email, generation/payment status) ----
   fetch("/api/config").then((r) => r.json()).then((cfg) => {
     generationLive = !!cfg.generationLive;
@@ -59,6 +79,7 @@
     selectedTemplate = name;
     document.querySelectorAll("[data-template]").forEach((b) =>
       b.classList.toggle("selected", b.dataset.template === name));
+    trackEvent("style_selected", { style: name });
   }
   document.querySelectorAll("[data-template]").forEach((btn) =>
     btn.addEventListener("click", () => setTemplate(btn.dataset.template))
@@ -67,16 +88,19 @@
   // ---- CTAs ----
   const heroCta = $("#heroCta");
   if (heroCta) heroCta.addEventListener("click", () => {
+    trackEvent("create_intent_click", { source: "hero" });
     if (!photoURL) input.click();
     else goto("screen-template");
   });
   const startBtn = $("#startBtn");
   if (startBtn) startBtn.addEventListener("click", () => {
+    trackEvent("create_intent_click", { source: "how_it_works" });
     if (!photoURL) input.click();
     else goto("screen-template");
   });
   document.querySelectorAll(".price-cta").forEach((btn) =>
     btn.addEventListener("click", async () => {
+      trackEvent("create_intent_click", { source: "pricing" });
       // When payments go live this creates a real Stripe Checkout session
       // carrying the chosen template; until then it opens the waitlist.
       try {
@@ -119,7 +143,7 @@
         body: JSON.stringify({ email }),
       });
       const data = await res.json();
-      if (data.ok) { goto("screen-waitlist-done"); }
+      if (data.ok) { trackEvent("early_access_signup"); goto("screen-waitlist-done"); }
       else { msg.classList.add("err"); msg.textContent = data.message || "Please try again."; }
     } catch (err) {
       msg.classList.add("err"); msg.textContent = "Network error — please try again.";
