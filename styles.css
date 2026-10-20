@@ -121,11 +121,15 @@ a{color:var(--gold)}
 .example-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
 .example-card video{width:100%;aspect-ratio:9/16;max-height:52vh;background:#000;display:block}
 .example-card .ex-meta{padding:12px 16px}
+.example-card .ex-label{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--gold);margin-bottom:4px}
 .example-card .ex-meta strong{color:var(--gold2);font-size:15px}
 .example-card .ex-meta p{color:var(--muted);font-size:13px}
 
 /* pricing */
 .price-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:20px}
+.price-grid.single{max-width:420px;margin-left:auto;margin-right:auto}
+.support-cta{text-align:center;margin:6px 0 4px;font-size:14.5px;color:var(--muted)}
+.support-cta a{color:var(--gold2);font-weight:700}
 .price-card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:24px 22px;position:relative}
 .price-card.featured{border-color:var(--gold)}
 .price-card .flag{
