@@ -30,17 +30,32 @@
     photoURL = URL.createObjectURL(file);
     $("#previewImg").src = photoURL;
     $("#resultPhoto").src = photoURL;
+    const ut = $("#uploadTitle");
+    if (ut) ut.textContent = "Photo ready ✓ — tap to change";
     goto("screen-template");
   });
 
-  // --- template select ---
+  // --- template select (wizard cards + hero pills stay in sync) ---
+  function setTemplate(name) {
+    selectedTemplate = name;
+    document.querySelectorAll(".tpl").forEach((b) =>
+      b.classList.toggle("selected", b.dataset.template === name));
+    document.querySelectorAll(".hpill").forEach((b) =>
+      b.classList.toggle("selected", b.dataset.template === name));
+  }
   document.querySelectorAll(".tpl").forEach((btn) =>
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".tpl").forEach((b) => b.classList.remove("selected"));
-      btn.classList.add("selected");
-      selectedTemplate = btn.dataset.template;
-    })
+    btn.addEventListener("click", () => setTemplate(btn.dataset.template))
   );
+  document.querySelectorAll(".hpill").forEach((btn) =>
+    btn.addEventListener("click", () => setTemplate(btn.dataset.template))
+  );
+
+  // --- hero CTA: upload first if no photo, otherwise continue to template step ---
+  const heroCta = $("#heroCta");
+  if (heroCta) heroCta.addEventListener("click", () => {
+    if (!photoURL) input.click();
+    else goto("screen-template");
+  });
 
   // --- generate (demo simulation of the waiting experience only) ---
   $("#generateBtn").addEventListener("click", () => {
