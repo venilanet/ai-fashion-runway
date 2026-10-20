@@ -16,7 +16,17 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://ai-fashion-runway.pages.dev/refund/</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://ai-fashion-runway.pages.dev/contact/</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://ai-fashion-runway.pages.dev/support/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
