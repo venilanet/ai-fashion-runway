@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment successful — AI Fashion Runway</title>
+<meta name="description" content="Your AI Fashion Runway order is confirmed. Upload your photo and generate your runway video.">
+<link rel="canonical" href="https://runway.ventlane.com/success/">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="logo" href="/">✦ AI FASHION <span>RUNWAY</span></a>
+  <nav class="main-nav">
+    <a href="/#how">How it works</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/#faq">FAQ</a>
+    <a href="/support/">Support</a>
+  </nav>
+</header>
+<main class="legal" style="max-width:640px">
+  <h1 id="sTitle">Confirming your payment…</h1>
+  <p class="updated" id="sSub">One moment while we verify with our payment provider.</p>
+
+  <div id="sBody" hidden>
+    <div class="support-card">
+      <h3>Order <span id="oId"></span> · confirmed ✓</h3>
+      <p>One-time payment received. You have <strong>1 video credit</strong> — no subscription, no auto-renewal.</p>
+    </div>
+
+    <h2>1 · Upload your photo</h2>
+    <form id="upForm" class="form-card">
+      <label>Choose a clear, front-facing photo<input type="file" id="upFile" accept="image/*" required></label>
+      <button class="cta" type="submit" id="upBtn">Upload photo</button>
+      <p class="form-msg" id="upMsg" role="status"></p>
+    </form>
+
+    <h2>2 · Generate your video</h2>
+    <p style="color:var(--muted);font-size:14.5px">Style: <strong id="gStyle">Golden Sheer Wings</strong> · 13s · 9:16 HD</p>
+    <button class="cta" id="genBtn" disabled>Generate my runway video</button>
+    <p class="form-msg" id="genMsg" role="status"></p>
+
+    <div id="gResult" hidden style="margin-top:18px">
+      <h2>Your video</h2>
+      <div class="result-frame"><video id="gVideo" controls playsinline preload="metadata"></video></div>
+      <a class="cta" id="gDl" href="#" download="ai-fashion-runway.mp4" style="display:inline-block;text-decoration:none">Download video</a>
+    </div>
+
+    <p class="fineprint" style="text-align:left">Refreshing this page is safe — it never creates a second charge or a duplicate video. Problems? <a href="/support/">Contact support</a> and quote your order number.</p>
+  </div>
+
+  <div id="sError" hidden>
+    <p style="color:#e08080" id="sErrMsg"></p>
+    <p><a href="/#pricing">Back to pricing</a> · <a href="/support/">Contact support</a></p>
+  </div>
+</main>
+<footer class="site-footer">
+  <nav class="legal-links">
+    <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms of Service</a> · <a href="/refund/">Refund Policy</a> · <a href="/contact/">Contact</a> · <a href="/support/">Support</a>
+  </nav>
+  <p class="copyright">© 2026 AI Fashion Runway. All rights reserved.</p>
+</footer>
+<script>
+(function () {
+  const qs = new URLSearchParams(location.search);
+  const sessionId = qs.get("session_id");
+  const idemKey = "web-" + (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
+  let orderId = null, generating = false;
+
+  const $ = (s) => document.querySelector(s);
+
+  async function api(path, opts) {
+    const r = await fetch(path, opts);
+    return r.json();
+  }
+
+  async function load() {
+    if (!sessionId) return fail("Missing session. If you just paid, check your confirmation email for the order link.");
+    const d = await api("/api/order?session_id=" + encodeURIComponent(sessionId)).catch(() => ({}));
+    if (!d.ok) return fail("We couldn't find this order. If you were charged, contact support with your payment receipt.");
+    orderId = d.order.id;
+    $("#oId").textContent = orderId;
+    $("#sTitle").textContent = "Payment successful";
+    $("#sSub").textContent = "Your video credit is ready.";
+    $("#sBody").hidden = false;
+    if (d.order.photo_url) {
+      $("#upBtn").textContent = "Photo uploaded ✓ — upload a different one";
+    }
+    const done = d.order.generations.find((g) => g.video_url);
+    if (done) showVideo(done.video_url);
+    else {
+      const active = d.order.generations.find((g) => ["queued", "rendering"].includes(g.status));
+      if (active) poll(active.id);
+    }
+    if (d.order.credits_used >= d.order.credits_total && !done) {
+      $("#genBtn").disabled = true;
+      $("#genMsg").textContent = "This order's credit has been used.";
+    } else if (d.order.photo_url) {
+      $("#genBtn").disabled = false;
+    }
+  }
+
+  function fail(msg) {
+    $("#sTitle").textContent = "Something's not right";
+    $("#sSub").textContent = "";
+    $("#sErrMsg").textContent = msg;
+    $("#sError").hidden = false;
+  }
+
+  $("#upForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const f = $("#upFile").files[0];
+    if (!f) return;
+    const msg = $("#upMsg");
+    msg.className = "form-msg"; msg.textContent = "Uploading…";
+    const fd = new FormData();
+    fd.append("order_id", orderId); fd.append("photo", f);
+    try {
+      const d = await api("/api/upload", { method: "POST", body: fd });
+      if (d.ok) {
+        msg.classList.add("ok"); msg.textContent = "Photo uploaded.";
+        $("#genBtn").disabled = false;
+      } else { msg.classList.add("err"); msg.textContent = d.message || "Upload failed — please try again."; }
+    } catch { msg.classList.add("err"); msg.textContent = "Network error — please try again."; }
+  });
+
+  $("#genBtn").addEventListener("click", async () => {
+    if (generating) return;
+    generating = true;
+    const btn = $("#genBtn"), msg = $("#genMsg");
+    btn.disabled = true; btn.textContent = "Generating…";
+    msg.className = "form-msg"; msg.textContent = "Starting your video — this takes 1–4 minutes.";
+    try {
+      const d = await api("/api/generate", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order_id: orderId, idem_key: idemKey, template: "golden-sheer-wings" }),
+      });
+      if (d.ok) poll(d.generation.id);
+      else { msg.classList.add("err"); msg.textContent = (d.generation && d.generation.error) || d.message || "Generation failed."; btn.disabled = false; btn.textContent = "Try again"; generating = false; }
+    } catch { msg.classList.add("err"); msg.textContent = "Network error — your credit was not used. Please try again."; btn.disabled = false; generating = false; }
+  });
+
+  async function poll(genId) {
+    const msg = $("#genMsg");
+    for (let i = 0; i < 40; i++) {
+      await new Promise((r) => setTimeout(r, 15000));
+      const d = await api("/api/order?id=" + encodeURIComponent(orderId)).catch(() => ({}));
+      const g = d.ok && d.order.generations.find((x) => x.id === genId);
+      if (!g) continue;
+      if (g.video_url) { showVideo(g.video_url); return; }
+      if (g.status === "submit_failed" || g.error) {
+        msg.classList.add("err");
+        msg.textContent = g.error || "Generation failed. Your credit was not used — please try again or contact support.";
+        const btn = $("#genBtn"); btn.disabled = false; btn.textContent = "Try again"; generating = false;
+        return;
+      }
+      msg.textContent = "Rendering your runway video… (" + g.status + ")";
+    }
+    msg.classList.add("err");
+    msg.textContent = "Taking longer than expected — refresh this page to check again. No extra charge.";
+    generating = false;
+  }
+
+  function showVideo(url) {
+    const v = $("#gVideo"); v.src = url;
+    $("#gDl").href = url;
+    $("#gResult").hidden = false;
+    $("#genMsg").className = "form-msg ok"; $("#genMsg").textContent = "Your runway video is ready.";
+    $("#genBtn").disabled = true; $("#genBtn").textContent = "Video ready ✓";
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>
