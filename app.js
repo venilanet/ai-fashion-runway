@@ -12,26 +12,17 @@
     "dream-angel": "Dream Angel",
   };
 
-  // ---- site config (Crisp id, support email, generation status) ----
+  // ---- site config (support email, generation/payment status) ----
   fetch("/api/config").then((r) => r.json()).then((cfg) => {
     generationLive = !!cfg.generationLive;
-    if (cfg.crispWebsiteId) loadCrisp(cfg.crispWebsiteId);
     document.querySelectorAll("[data-support-email]").forEach((el) => {
-      if (cfg.supportEmail) { el.textContent = cfg.supportEmail; el.href = "mailto:" + cfg.supportEmail; }
-      else { el.closest("[data-email-row]").hidden = true; }
+      if (cfg.supportEmail) {
+        el.textContent = cfg.supportEmail; el.href = "mailto:" + cfg.supportEmail;
+        const row = el.closest("[data-email-row]");
+        if (row) row.hidden = false;
+      }
     });
-    const note = $("[data-crisp-note]");
-    if (note && !cfg.crispWebsiteId) note.hidden = false;
   }).catch(() => {});
-
-  function loadCrisp(id) {
-    window.$crisp = [];
-    window.CRISP_WEBSITE_ID = id;
-    const s = document.createElement("script");
-    s.src = "https://client.crisp.chat/l.js";
-    s.async = true;
-    document.head.appendChild(s);
-  }
 
   // ---- navigation between steps ----
   function goto(id) {
@@ -202,7 +193,7 @@
       card.innerHTML =
         '<video controls playsinline preload="metadata"' + (s.poster ? ' poster="' + s.poster + '"' : "") + '>' +
         '<source src="' + s.src + '" type="video/mp4"></video>' +
-        '<div class="ex-meta"><strong>' + s.style + "</strong><p>" + s.note + "</p></div>";
+        '<div class="ex-meta"><p class="ex-label">EXAMPLE VIDEO</p><strong>' + s.style + "</strong><p>" + s.note + "</p></div>";
       grid.appendChild(card);
     });
   })();
