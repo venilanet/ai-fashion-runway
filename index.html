@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AI Fashion Runway Video Generator — Turn Your Photo into a Runway Video</title>
+<meta name="description" content="Upload one photo and star in your own couture runway show. Our AI turns your picture into a 13-second vertical fashion runway video — golden sheer wings, supermodel walk or dream angel. Free demo preview.">
+<link rel="canonical" href="https://ai-fashion-runway.pages.dev/">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AI Fashion Runway">
+<meta property="og:title" content="AI Fashion Runway Video Generator">
+<meta property="og:description" content="Upload one photo. Walk the runway like a supermodel. A 13-second AI fashion video, ready for TikTok & Reels.">
+<meta property="og:url" content="https://ai-fashion-runway.pages.dev/">
+<meta property="og:image" content="https://ai-fashion-runway.pages.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI Fashion Runway Video Generator">
+<meta name="twitter:description" content="Upload one photo → your own couture runway video. Golden wings, supermodel walk, dream angel.">
+<meta name="twitter:image" content="https://ai-fashion-runway.pages.dev/og.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"AI Fashion Runway Video Generator","applicationCategory":"MultimediaApplication","operatingSystem":"Web","description":"Turn a single photo into a 13-second AI fashion runway video with original couture scenes.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+</head>
+<body>
+
+<div class="demo-banner" role="note">
+  <strong>DEMO PREVIEW</strong> — Live AI generation is not connected yet. This demo shows the full experience; no real video is generated and nothing is uploaded.
+</div>
+
+<header class="site-header">
+  <div class="logo">✦ AI FASHION <span>RUNWAY</span></div>
+  <span class="demo-pill">Demo</span>
+</header>
+
+<main>
+  <!-- ============ SCREEN 1 : HERO + UPLOAD ============ -->
+  <section id="screen-upload" class="screen active">
+    <div class="hero">
+      <p class="eyebrow">AI FASHION VIDEO STUDIO</p>
+      <h1>Walk the Runway.<br><em>From One Photo.</em></h1>
+      <p class="sub">Upload a single photo and star in your own couture fashion show — a 13-second vertical runway video made for TikTok &amp; Reels.</p>
+
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 320 210" class="hero-svg">
+          <defs>
+            <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f6e27a"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#9a7418"/>
+            </linearGradient>
+            <radialGradient id="glow" cx=".5" cy=".35" r=".8">
+              <stop offset="0" stop-color="#3a2f10"/><stop offset="1" stop-color="#0b0b10"/>
+            </radialGradient>
+          </defs>
+          <rect width="320" height="210" fill="url(#glow)"/>
+          <g fill="none" stroke="#2c2c38" stroke-width="1">
+            <path d="M160 210 L96 96 M160 210 L224 96 M160 210 L60 96 M160 210 L260 96"/>
+          </g>
+          <g opacity=".55" fill="url(#gold)">
+            <path d="M154 80 C104 30 58 18 22 30 C64 44 96 66 116 104 C92 78 60 66 34 70 C76 86 112 112 136 148 C142 118 148 94 154 80 Z"/>
+            <path d="M166 80 C216 30 262 18 298 30 C256 44 224 66 204 104 C228 78 260 66 286 70 C244 86 208 112 184 148 C178 118 172 94 166 80 Z"/>
+          </g>
+          <g opacity=".3" fill="#f6e27a">
+            <path d="M154 86 C116 46 78 34 46 40 C82 54 108 74 124 106 C104 86 78 76 56 78 C92 92 120 114 138 144 C142 120 148 100 154 86 Z"/>
+            <path d="M166 86 C204 46 242 34 274 40 C238 54 212 74 196 106 C216 86 242 76 264 78 C228 92 200 114 182 144 C178 120 172 100 166 86 Z"/>
+          </g>
+          <g fill="none" stroke="#f6e27a" stroke-width="1" opacity=".7">
+            <path d="M152 84 C110 44 70 30 40 34"/>
+            <path d="M168 84 C210 44 250 30 280 34"/>
+          </g>
+          <g fill="#f3ead2">
+            <ellipse cx="160" cy="66" rx="9" ry="11"/>
+            <path d="M160 74 C150 92 148 118 152 148 L150 196 L158 196 L160 156 L162 196 L170 196 L168 148 C172 118 170 92 160 74 Z"/>
+          </g>
+          <g fill="#f6e27a"><circle cx="40" cy="26" r="1.6"/><circle cx="282" cy="20" r="1.6"/><circle cx="240" cy="52" r="1.3"/><circle cx="78" cy="58" r="1.3"/><circle cx="160" cy="14" r="1.5"/></g>
+        </svg>
+        <p class="hero-art-cap">Golden Sheer Wings — translucent golden silk that catches the light, our signature scene</p>
+      </div>
+
+      <label class="upload-card" id="uploadCard">
+        <input type="file" id="photoInput" accept="image/*" hidden>
+        <span class="upload-icon">⬆</span>
+        <span class="upload-title">Upload your photo</span>
+        <span class="upload-hint">Front-facing, face uncovered, good light works best.<br>Your photo stays on your device in this demo.</span>
+        <span class="upload-btn">Choose a photo</span>
+      </label>
+
+      <ul class="trust">
+        <li>✦ 13-second vertical video (9:16)</li>
+        <li>✦ 3 original couture templates</li>
+        <li>✦ Made for TikTok &amp; Instagram Reels</li>
+      </ul>
+    </div>
+
+    <section class="how">
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><strong>Upload</strong><span>Pick one clear photo of yourself.</span></li>
+        <li><strong>Choose a scene</strong><span>Golden Sheer Wings, Supermodel Walk or Dream Angel.</span></li>
+        <li><strong>Walk</strong><span>AI builds your runway moment — download &amp; share.</span></li>
+      </ol>
+    </section>
+
+    <section class="faq">
+      <h2>FAQ</h2>
+      <details><summary>What photo should I upload?</summary><p>A front-facing photo with your face uncovered and even lighting. Half-body or full-body shots give the most natural runway walk.</p></details>
+      <details><summary>How long is the video?</summary><p>13 seconds, vertical 9:16 at 720p — sized for TikTok and Instagram Reels.</p></details>
+      <details><summary>Is this affiliated with a fashion brand?</summary><p>No. Every scene, outfit and wing design here is original. This is an independent AI tool and is not endorsed by any fashion house or fashion show.</p></details>
+      <details><summary>Is live generation available now?</summary><p>Not yet — this is a demo preview of the full experience. Live generation is being connected now; check back very soon.</p></details>
+    </section>
+  </section>
+
+  <!-- ============ SCREEN 2 : TEMPLATE SELECT ============ -->
+  <section id="screen-template" class="screen">
+    <button class="back-btn" data-goto="screen-upload">← Back</button>
+    <h2 class="screen-title">Choose your runway</h2>
+    <div class="photo-preview">
+      <img id="previewImg" alt="Your uploaded photo">
+      <span>Your photo</span>
+    </div>
+    <div class="templates" id="templateList">
+      <button class="tpl selected" data-template="golden-sheer-wings">
+        <span class="tpl-art tpl-gold"><svg viewBox="0 0 60 60"><g opacity=".6" fill="#e9c860"><path d="M28 20 C14 6 4 4 1 6 C12 12 19 21 23 34 C15 25 6 22 1 24 C12 30 21 39 25 50 C27 37 27 27 28 20Z"/><path d="M32 20 C46 6 56 4 59 6 C48 12 41 21 37 34 C45 25 54 22 59 24 C48 30 39 39 35 50 C33 37 33 27 32 20Z"/></g><ellipse cx="30" cy="16" rx="4.5" ry="5.5" fill="#f3ead2"/><path d="M30 21 C26 30 25 42 27 54 L29.5 54 L30 40 L30.5 54 L33 54 C35 42 34 30 30 21Z" fill="#f3ead2"/></svg></span>
+        <span class="tpl-name">Golden Sheer Wings</span>
+        <span class="tpl-desc">Translucent golden silk wings · light pours through the flowing fabric</span>
+        <span class="tpl-meta">13s · 9:16 · Signature look</span>
+      </button>
+      <button class="tpl" data-template="supermodel-walk">
+        <span class="tpl-art tpl-black"><svg viewBox="0 0 60 60"><ellipse cx="30" cy="14" rx="5" ry="6" fill="#f3ead2"/><path d="M30 19 C25 30 24 44 26 56 L29 56 L30 40 L31 56 L34 56 C36 44 35 30 30 19Z" fill="#e8e2d2"/></svg></span>
+        <span class="tpl-name">Supermodel Walk</span>
+        <span class="tpl-desc">Black couture gown · classic spotlight runway</span>
+        <span class="tpl-meta">13s · 9:16 · Classic starter</span>
+      </button>
+      <button class="tpl" data-template="dream-angel">
+        <span class="tpl-art tpl-pink"><svg viewBox="0 0 60 60"><path d="M28 22 C16 8 6 6 2 8 C12 14 18 22 22 34 C14 26 6 24 2 26 C12 32 20 40 24 50 C26 38 27 28 28 22Z" fill="#f2a7c3"/><path d="M32 22 C44 8 54 6 58 8 C48 14 42 22 38 34 C46 26 54 24 58 26 C48 32 40 40 36 50 C34 38 33 28 32 22Z" fill="#f2a7c3"/><ellipse cx="30" cy="16" rx="4.5" ry="5.5" fill="#fdf3f6"/><path d="M30 21 C26 30 25 42 27 54 L29.5 54 L30 40 L30.5 54 L33 54 C35 42 34 30 30 21Z" fill="#fdf3f6"/></svg></span>
+        <span class="tpl-name">Dream Angel</span>
+        <span class="tpl-desc">Blush-pink wings · soft dreamy light</span>
+        <span class="tpl-meta">13s · 9:16 · Soft &amp; romantic</span>
+      </button>
+    </div>
+    <button class="cta" id="generateBtn">Generate my runway video</button>
+    <p class="fineprint">Demo mode: generation is simulated locally. No photo leaves your device, no video is created.</p>
+  </section>
+
+  <!-- ============ SCREEN 3 : WAITING ============ -->
+  <section id="screen-waiting" class="screen">
+    <span class="demo-pill big">DEMO</span>
+    <h2 class="screen-title">Building your runway moment…</h2>
+    <div class="progress-ring" aria-hidden="true"><div class="ring-bar" id="ringBar"></div><span id="ringPct">0%</span></div>
+    <ul class="gen-steps" id="genSteps">
+      <li data-step="0">Analyzing your photo</li>
+      <li data-step="1">Designing your couture look</li>
+      <li data-step="2">Choreographing the walk</li>
+      <li data-step="3">Rendering under the spotlights</li>
+    </ul>
+    <p class="fineprint">In live mode this takes about 1–4 minutes. This demo runs a shortened preview of the waiting experience.</p>
+  </section>
+
+  <!-- ============ SCREEN 4 : RESULT (DEMO) ============ -->
+  <section id="screen-result" class="screen">
+    <span class="demo-pill big">DEMO RESULT</span>
+    <h2 class="screen-title">Your runway video will appear here</h2>
+    <div class="result-frame">
+      <img id="resultPhoto" alt="">
+      <div class="result-overlay">
+        <p class="result-badge">LIVE GENERATION NOT CONNECTED YET</p>
+        <p>This screen is a design demo. When live generation launches, your finished 13-second runway video will play here — starring you, in the <strong id="resultTplName">Golden Sheer Wings</strong> scene.</p>
+      </div>
+    </div>
+    <button class="cta disabled" disabled>Download video — available at launch</button>
+    <button class="ghost-btn" data-goto="screen-template">Try another template</button>
+    <button class="ghost-btn" data-goto="screen-upload">Start over</button>
+    <p class="fineprint">Nothing was generated, uploaded or stored. Demo only.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>AI Fashion Runway — an independent AI video tool. All scenes, outfits and wing designs are original creations; not affiliated with or endorsed by any fashion brand or fashion show.</p>
+  <p class="demo-note">Demo preview build — live generation coming soon.</p>
+</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>
