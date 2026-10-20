@@ -95,3 +95,12 @@
     requestAnimationFrame(frame);
   }
 })();
+
+// Debug helper: ?dbg=1 writes viewport/scroll widths into <title> for headless checks.
+if (new URLSearchParams(location.search).has("dbg")) {
+  addEventListener("load", () => {
+    document.title = "DBG innerW=" + window.innerWidth +
+      " scrollW=" + document.documentElement.scrollWidth +
+      " bodyH=" + document.body.scrollHeight;
+  });
+}
