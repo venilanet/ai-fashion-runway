@@ -39,19 +39,40 @@ export async function onRequestGet({ request, env }) {
     return Response.json({ ok: false, error: "not_found" }, { status: 404 });
   }
   // Never expose Stripe internals to the browser.
+  // Failed generations automatically restore the credit (per Refund Policy);
+  // the order record is always kept for manual handling.
+  function failGeneration(g, error) {
+    if (!g.credited_back && (g.status === "queued" || g.status === "rendering")) {
+      order.credits_used = Math.max(0, order.credits_used - 1);
+      g.credited_back = true;
+    }
+    g.status = "failed";
+    g.error = error;
+  }
+
   const gens = [];
+  let dirty = false;
   for (const g of order.generations || []) {
     const live = g.fal_request_id ? await falStatus(env, g.fal_request_id) : null;
     let videoUrl = g.video_url;
     if (live === "COMPLETED" && !videoUrl) {
       videoUrl = await falVideoUrl(env, g.fal_request_id);
-      if (videoUrl) { g.video_url = videoUrl; g.status = "completed"; }
-    } else if (live && live !== "COMPLETED") {
-      g.status = live === "IN_PROGRESS" ? "rendering" : "queued";
+      if (videoUrl) {
+        g.video_url = videoUrl; g.status = "completed"; dirty = true;
+      } else {
+        failGeneration(g, "The video could not be retrieved. Your credit was automatically returned — please try again or contact support.");
+        dirty = true;
+      }
+    } else if (live && live !== "COMPLETED" && live !== "IN_QUEUE" && live !== "IN_PROGRESS") {
+      // Any other terminal status from the queue → failed, credit restored.
+      failGeneration(g, "The video model could not complete this request. Your credit was automatically returned — please try again or contact support.");
+      dirty = true;
+    } else if (live === "IN_PROGRESS") {
+      if (g.status !== "rendering") { g.status = "rendering"; dirty = true; }
     }
     gens.push({ id: g.id, template: g.template, status: g.status, video_url: videoUrl, error: g.error || null, ts: g.ts });
   }
-  if (gens.some((g) => g.video_url && !order.generations.find((x) => x.id === g.id).video_url)) {
+  if (dirty) {
     await env.KV.put("order:" + order.id, JSON.stringify(order));
   }
   return Response.json({
@@ -61,6 +82,7 @@ export async function onRequestGet({ request, env }) {
       status: order.status,
       credits_total: order.credits_total,
       credits_used: order.credits_used,
+      template: order.template || "golden-sheer-wings",
       photo_url: order.photo_url ? true : false,
       generations: gens,
     },
