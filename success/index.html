@@ -38,7 +38,7 @@
     </form>
 
     <h2>2 · Generate your video</h2>
-    <p style="color:var(--muted);font-size:14.5px">Style: <strong id="gStyle">Golden Sheer Wings</strong> · 13s · 9:16 HD</p>
+    <p style="color:var(--muted);font-size:14.5px">Style: <strong id="gStyle">—</strong> · target 13s · 9:16 HD</p>
     <button class="cta" id="genBtn" disabled>Generate my runway video</button>
     <p class="form-msg" id="genMsg" role="status"></p>
 
@@ -66,8 +66,16 @@
 (function () {
   const qs = new URLSearchParams(location.search);
   const sessionId = qs.get("session_id");
-  const idemKey = "web-" + (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
-  let orderId = null, generating = false;
+  const idemKey = () => "web-" + (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + "-" + Math.random().toString(36).slice(2));
+  const templateNames = {
+    "golden-sheer-wings": "Golden Sheer Wings",
+    "supermodel-walk": "Supermodel Walk",
+    "dream-angel": "Dream Angel",
+  };
+  let orderId = null, orderTemplate = "golden-sheer-wings", generating = false;
+  // Fresh idempotency key per attempt: a failed submit must be retryable,
+  // while double-clicks are blocked by the `generating` flag + disabled button.
+  // The server's credit check is the final backstop against duplicate spend.
 
   const $ = (s) => document.querySelector(s);
 
@@ -81,6 +89,8 @@
     const d = await api("/api/order?session_id=" + encodeURIComponent(sessionId)).catch(() => ({}));
     if (!d.ok) return fail("We couldn't find this order. If you were charged, contact support with your payment receipt.");
     orderId = d.order.id;
+    orderTemplate = d.order.template || "golden-sheer-wings";
+    $("#gStyle").textContent = templateNames[orderTemplate] || orderTemplate;
     $("#oId").textContent = orderId;
     $("#sTitle").textContent = "Payment successful";
     $("#sSub").textContent = "Your video credit is ready.";
@@ -131,11 +141,11 @@
     generating = true;
     const btn = $("#genBtn"), msg = $("#genMsg");
     btn.disabled = true; btn.textContent = "Generating…";
-    msg.className = "form-msg"; msg.textContent = "Starting your video — this takes 1–4 minutes.";
+    msg.className = "form-msg"; msg.textContent = "Starting your video — this usually takes a few minutes.";
     try {
       const d = await api("/api/generate", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ order_id: orderId, idem_key: idemKey, template: "golden-sheer-wings" }),
+        body: JSON.stringify({ order_id: orderId, idem_key: idemKey(), template: orderTemplate }),
       });
       if (d.ok) poll(d.generation.id);
       else { msg.classList.add("err"); msg.textContent = (d.generation && d.generation.error) || d.message || "Generation failed."; btn.disabled = false; btn.textContent = "Try again"; generating = false; }
