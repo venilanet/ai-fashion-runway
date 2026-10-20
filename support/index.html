@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support Center — AI Fashion Runway</title>
+<meta name="description" content="AI Fashion Runway support: contact form, ticket reference, failed-generation help, and refund requests.">
+<link rel="canonical" href="https://ai-fashion-runway.pages.dev/support/">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="logo" href="/">✦ AI FASHION <span>RUNWAY</span></a>
+  <nav class="main-nav">
+    <a href="/#how">How it works</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/#faq">FAQ</a>
+    <a href="/support/">Support</a>
+  </nav>
+  <a class="nav-cta" href="/#app">Create video</a>
+</header>
+<main class="legal">
+  <p><a class="backlink" href="/">← Home</a></p>
+  <h1>Support Center</h1>
+  <p class="updated">We read every message and reply within 2 business days.</p>
+
+  <div class="support-grid">
+    <div class="support-card" data-email-row hidden>
+      <h3>Email us</h3>
+      <p><a data-support-email href="#"></a></p>
+      <p>For anything account- or payment-related, email works best — include your order number if you have one.</p>
+    </div>
+    <div class="support-card">
+      <h3>Live chat</h3>
+      <p data-crisp-note hidden>Live chat is being set up and will appear here shortly.</p>
+      <p>Click the chat bubble at the bottom-right of any page once it's live.</p>
+    </div>
+  </div>
+
+  <h2>Send us a message</h2>
+  <form id="contactForm" class="form-card">
+    <label>Your name<input type="text" id="cName" required maxlength="80" autocomplete="name"></label>
+    <label>Email<input type="email" id="cEmail" required maxlength="120" autocomplete="email"></label>
+    <label>Topic
+      <select id="cSubject">
+        <option>General question</option>
+        <option>Generation failed / looks wrong</option>
+        <option>Refund request</option>
+        <option>Payment / order issue</option>
+        <option>Privacy request</option>
+      </select>
+    </label>
+    <label>Order number (if you have one)<input type="text" id="cOrder" maxlength="40" placeholder="e.g. AFR-20261021-AB12"></label>
+    <label>Message<textarea id="cMessage" required maxlength="2000" placeholder="Tell us what happened…"></textarea></label>
+    <button class="cta" type="submit">Send message</button>
+    <p class="form-msg" id="contactMsg" role="status"></p>
+    <div class="ticket-ref" id="ticketBox" hidden>
+      Message received. Your ticket reference is <strong id="ticketRef"></strong> — quote it in any follow-up.
+    </div>
+  </form>
+
+  <h2>If your video failed to generate</h2>
+  <ol class="process-steps">
+    <li><strong>Check your credits first</strong> — failed generations are re-credited automatically within minutes. If the credit is back, just try again.</li>
+    <li><strong>Try once more</strong> with a clearer front-facing photo; most failures come from heavy filters or obscured faces.</li>
+    <li><strong>Still stuck?</strong> Send the form above with topic "Generation failed" — include the approximate time it happened so we can look it up.</li>
+  </ol>
+
+  <h2>Refund requests</h2>
+  <p>Read our <a href="/refund/">Refund Policy</a> first, then send the form above with topic "Refund request" and your order number. We reply within 2 business days.</p>
+
+  <h2>Finding your order number</h2>
+  <p>Your order number (format <code>AFR-YYYYMMDD-XXXX</code>) is in your purchase confirmation email and on every receipt. It's the fastest way for us to locate your payment.</p>
+</main>
+<footer class="site-footer">
+  <p>AI Fashion Runway — an independent AI video tool. All scenes, outfits and wing designs are original creations; not affiliated with or endorsed by any fashion brand or fashion show.</p>
+  <nav class="legal-links">
+    <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms of Service</a> · <a href="/refund/">Refund Policy</a> · <a href="/contact/">Contact</a> · <a href="/support/">Support</a>
+  </nav>
+  <p class="copyright">© 2026 AI Fashion Runway. All rights reserved.</p>
+</footer>
+<script>
+(function () {
+  // Fill support email / Crisp status from server config (values set by the site owner).
+  fetch("/api/config").then((r) => r.json()).then((cfg) => {
+    document.querySelectorAll("[data-support-email]").forEach((el) => {
+      if (cfg.supportEmail) {
+        el.textContent = cfg.supportEmail; el.href = "mailto:" + cfg.supportEmail;
+        el.closest("[data-email-row]").hidden = false;
+      }
+    });
+    const note = document.querySelector("[data-crisp-note]");
+    if (note && !cfg.crispWebsiteId) note.hidden = false;
+    if (cfg.crispWebsiteId && !window.$crisp) {
+      window.$crisp = []; window.CRISP_WEBSITE_ID = cfg.crispWebsiteId;
+      const s = document.createElement("script");
+      s.src = "https://client.crisp.chat/l.js"; s.async = true;
+      document.head.appendChild(s);
+    }
+  }).catch(() => {});
+
+  const form = document.getElementById("contactForm");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById("contactMsg");
+    const box = document.getElementById("ticketBox");
+    msg.className = "form-msg"; msg.textContent = "Sending…"; box.hidden = true;
+    const payload = {
+      name: document.getElementById("cName").value.trim(),
+      email: document.getElementById("cEmail").value.trim(),
+      subject: document.getElementById("cSubject").value,
+      orderRef: document.getElementById("cOrder").value.trim(),
+      message: document.getElementById("cMessage").value.trim(),
+    };
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        msg.className = "form-msg ok"; msg.textContent = "";
+        document.getElementById("ticketRef").textContent = data.ticket_ref;
+        box.hidden = false;
+        form.querySelectorAll("input, textarea").forEach((el) => { el.value = ""; });
+      } else {
+        msg.classList.add("err"); msg.textContent = data.message || "Please try again.";
+      }
+    } catch (err) {
+      msg.classList.add("err"); msg.textContent = "Network error — please try again.";
+    }
+  });
+})();
+</script>
+</body>
+</html>
