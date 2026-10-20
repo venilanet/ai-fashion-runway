@@ -92,6 +92,17 @@ export async function onRequestPost(context) {
     );
   }
 
+// COST & ABUSE GUARDS (launch checklist, implemented server-side only):
+//  1. This endpoint never accepts a duration or audio flag from the client —
+//     both are fixed here, so a caller cannot inflate the bill.
+//  2. Rate limiting: add a KV namespace binding (e.g. RATE_LIMIT) and reject
+//     bursts per IP before this live path is opened.
+//  3. Spend cap: poll fal's usage API (GET /v1/usage) and compare against a
+//     DAILY_BUDGET_USD env var; return 429 with an honest message when exceeded.
+//  4. The FAL_KEY itself must be set as a Pages secret (dashboard >
+//     Settings > Environment variables, or `wrangler pages secret put`).
+//     It must never be committed to the repo or sent to the browser.
+
   const payload = {
     start_image_url,
     duration: "13",
@@ -113,7 +124,13 @@ export async function onRequestPost(context) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
-  });
+  }).catch(() => null);
+  if (!res) {
+    return Response.json(
+      { mode: "live", status: "error", message: "Could not reach the generation service. Please try again in a minute." },
+      { status: 502 }
+    );
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     return Response.json(
