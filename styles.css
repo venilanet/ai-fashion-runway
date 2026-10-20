@@ -39,8 +39,12 @@ h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:600;letter-spacing
 
 /* hero */
 .eyebrow{letter-spacing:.3em;font-size:11px;color:var(--gold);text-align:center;font-weight:700}
-.hero h1{font-size:40px;line-height:1.12;text-align:center;margin:12px 0 10px}
-.hero h1 em{font-style:italic;background:linear-gradient(90deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero h1{font-size:34px;line-height:1.15;text-align:center;margin:12px 0 6px}
+.visual-tag{
+  font-family:Georgia,serif;font-style:italic;text-align:center;font-size:21px;margin-bottom:12px;
+  background:linear-gradient(90deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.visual-tag em{font-style:italic}
 .sub{text-align:center;color:var(--muted);font-size:16px;max-width:36ch;margin:0 auto}
 .hero-art{margin:22px 0 6px}
 .hero-svg{width:100%;height:auto;border-radius:var(--radius);border:1px solid var(--line);display:block}
@@ -62,6 +66,28 @@ h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:600;letter-spacing
 }
 .trust{list-style:none;display:flex;flex-direction:column;gap:6px;margin:20px 4px 0;color:var(--ivory);font-size:14.5px}
 .trust li{color:#d9d2bd}
+
+.photo-tips{margin-top:22px;text-align:left}
+.photo-tips h3{font-size:16px;color:var(--gold2);margin:14px 0 6px}
+.photo-tips ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.photo-tips li{color:var(--muted);font-size:14px;padding-left:20px;position:relative}
+.photo-tips li::before{content:"–";position:absolute;left:6px;color:var(--gold)}
+
+.legal-links{margin-top:10px}
+.legal-links a{color:var(--gold);text-decoration:none;font-size:13.5px}
+.legal-links a:hover{text-decoration:underline}
+
+.legal{padding-top:8px}
+.legal h1{font-size:28px;margin:14px 0 4px}
+.legal .updated{color:#77717f;font-size:13px;margin-bottom:18px}
+.legal h2{font-size:19px;margin:22px 0 8px;color:var(--gold2)}
+.legal p,.legal li{color:#d9d2bd;font-size:15px;margin-bottom:10px}
+.legal ul{padding-left:20px}
+
+.error-404{text-align:center;padding:60px 18px}
+.error-404 h1{font-size:64px;background:linear-gradient(90deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.error-404 p{color:var(--muted);margin:12px 0 24px}
+.error-404 .cta{max-width:320px;margin:0 auto}
 
 .how,.faq{margin-top:36px}
 .how h2,.faq h2{font-size:22px;margin-bottom:14px}
